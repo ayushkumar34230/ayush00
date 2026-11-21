@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Paintings storage rules:
+    // - Public read for anyone visiting the website.
+    // - Upload requires valid image MIME type and file size <= 15MB.
+    // - Delete is restricted to authenticated users.
+    match /paintings/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource.size < 15 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null;
+    }
+  }
+}

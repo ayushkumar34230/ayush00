@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Art Gallery | Welcome to My Creative World</title>
+  <meta name="description" content="Official online gallery showcasing original paintings, masterworks, and contemporary fine art. Explore the collection and experience creative expression." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Gallery Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- Firebase SDKs (Compat v10 CDN for maximum browser compatibility) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+
+  <!-- ================= PRELOADER ================= -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-spinner"></div>
+    <div class="preloader-title">My Art Gallery</div>
+  </div>
+
+  <!-- ================= FIREBASE CONFIG STATUS BANNER ================= -->
+  <div id="firebase-status-banner" class="status-banner hidden">
+    <div class="status-banner-content">
+      <span class="status-badge"><i class="fa-solid fa-bolt"></i> Demo / Preview Mode</span>
+      <span>Firebase credentials not yet connected. Using local storage & curated sample collection.</span>
+      <button id="btn-open-config-wizard" class="banner-action-btn">
+        <i class="fa-solid fa-gear"></i> Connect Firebase
+      </button>
+    </div>
+  </div>
+
+  <!-- ================= NAVIGATION BAR ================= -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <div class="brand-logo" data-nav-target="home">
+        <div class="brand-icon">
+          <i class="fa-solid fa-palette"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">My Art Gallery</span>
+          <span class="brand-subtitle">Fine Art Studio</span>
+        </div>
+      </div>
+
+      <!-- Desktop & Mobile Navigation Links -->
+      <nav>
+        <ul id="navbar-links" class="nav-links">
+          <li><a href="#home" class="nav-link active" data-nav-target="home"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="#gallery" class="nav-link" data-nav-target="gallery"><i class="fa-solid fa-images"></i> Gallery</a></li>
+          <li><a href="#upload" class="nav-link" data-nav-target="upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload Painting</a></li>
+          <li><a href="#about" class="nav-link" data-nav-target="about"><i class="fa-solid fa-user-astronaut"></i> About</a></li>
+          <li><a href="#contact" class="nav-link" data-nav-target="contact"><i class="fa-solid fa-paper-plane"></i> Contact</a></li>
+          <li>
+            <a href="#admin" class="nav-link admin-only-badge hidden" data-nav-target="admin">
+              <i class="fa-solid fa-shield-halved"></i> Admin Portal
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Nav Action Buttons -->
+      <div class="nav-actions">
+        <!-- Admin Login Button -->
+        <button id="nav-login-btn" class="btn btn-outline btn-sm">
+          <i class="fa-solid fa-lock"></i> Admin Login
+        </button>
+
+        <!-- Authenticated Admin Badge & Menu -->
+        <div id="nav-user-menu" class="nav-auth-state hidden">
+          <span class="admin-badge"><i class="fa-solid fa-circle-check"></i> <span id="nav-user-email">Admin</span></span>
+          <button id="nav-logout-btn" class="btn btn-outline btn-sm" title="Sign Out">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+          </button>
+        </div>
+
+        <!-- Mobile Hamburger Toggle -->
+        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT WRAPPER ================= -->
+  <main>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: HOME PAGE                                              -->
+    <!-- ************************************************************* -->
+    <section id="view-home" class="page-view active">
+      <!-- Hero Section -->
+      <div class="hero-section">
+        <div class="container hero-grid">
+          <div class="hero-text-content">
+            <div class="hero-welcome-badge">
+              <i class="fa-solid fa-sparkles"></i> Welcome to My Creative World
+            </div>
+            <h1 class="hero-title">
+              Experience the Depth of <span class="gold-accent">Fine Artistry</span> & Vision
+            </h1>
+            <p class="hero-description">
+              Step into a sanctuary where imagination takes form across canvas, texture, and light. Explore our curated portfolio of original oil paintings, vibrant acrylics, and emotive watercolors.
+            </p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-nav-target="gallery">
+                <i class="fa-solid fa-compass"></i> Explore Full Gallery
+              </button>
+              <button class="btn btn-outline" data-nav-target="upload">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Painting
+              </button>
+            </div>
+            <!-- Statistics Bar -->
+            <div class="hero-stats-row">
+              <div class="hero-stat-item">
+                <h4 id="hero-stat-artworks">50+</h4>
+                <p>Original Paintings</p>
+              </div>
+              <div class="hero-stat-item">
+                <h4>8+</h4>
+                <p>Art Mediums</p>
+              </div>
+              <div class="hero-stat-item">
+                <h4>100%</h4>
+                <p>Authentic Works</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Artwork Spotlight Frame -->
+          <div class="hero-artwork-frame">
+            <div class="frame-outer">
+              <div class="frame-inner">
+                <img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=1000&q=80" alt="Venetian Sunset Masterpiece" class="frame-img" />
+                <div class="frame-badge">
+                  <div>
+                    <div class="frame-badge-title">Golden Reverie in Venice</div>
+                    <div class="frame-badge-sub">Oil on Linen • Elena Rostova</div>
+                  </div>
+                  <button class="btn btn-outline btn-sm" onclick="window.app.openLightbox('art-1')">
+                    <i class="fa-solid fa-expand"></i> Inspect
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Paintings Showcase -->
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Curated Selection</span>
+            <h2 class="section-title">Featured Masterpieces</h2>
+            <p class="section-subtitle">
+              Hand-picked highlights from the latest series, exploring illumination, atmospheric texture, and evocative landscapes.
+            </p>
+          </div>
+
+          <div id="home-featured-grid" class="gallery-grid">
+            <!-- Populated dynamically via JS -->
+          </div>
+
+          <div class="text-center" style="margin-top: 3.5rem; display: flex; justify-content: center;">
+            <button class="btn btn-outline" data-nav-target="gallery" style="padding: 0.9rem 2.2rem;">
+              <i class="fa-solid fa-eye"></i> View All Artworks in Gallery
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Artistic Mediums / Styles Section -->
+      <section class="section" style="background: var(--bg-card); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Creative Disciplines</span>
+            <h2 class="section-title">Mediums of Expression</h2>
+            <p class="section-subtitle">
+              From classical oil on Belgian linen to modern digital studies, each medium offers a distinct emotional resonance.
+            </p>
+          </div>
+
+          <div class="philosophy-grid">
+            <div class="philosophy-card">
+              <i class="fa-solid fa-paintbrush"></i>
+              <h3>Oil Paintings</h3>
+              <p class="text-muted">Rich luminous layers built with traditional palette knives and translucent glazes, creating unmatched depth and permanence.</p>
+            </div>
+            <div class="philosophy-card">
+              <i class="fa-solid fa-water-ladder"></i>
+              <h3>Watercolors</h3>
+              <p class="text-muted">Spontaneous fluid pigments dancing across cold-pressed cotton paper, capturing ethereal gradients and atmospheric stillness.</p>
+            </div>
+            <div class="philosophy-card">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <h3>Acrylic & Mixed Media</h3>
+              <p class="text-muted">Textured impasto combined with 24k gold leaf, sand, and modern acrylic gels for bold tactile dynamism.</p>
+            </div>
+            <div class="philosophy-card">
+              <i class="fa-solid fa-laptop-code"></i>
+              <h3>Digital Works</h3>
+              <p class="text-muted">High-resolution modern explorations rendered on digital canvas and printed on archival museum rag paper.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Artist Quote Banner -->
+      <section class="section">
+        <div class="container">
+          <div class="about-quote-box text-center" style="max-width: 860px; margin: 0 auto; padding: 3rem 2rem;">
+            <p style="font-size: 1.5rem; line-height: 1.6; margin-bottom: 1rem;">
+              "Painting is not the representation of an object as it exists in the physical world, but rather the translation of the emotion it stirs within the soul."
+            </p>
+            <div class="artist-signature">Elena Rostova</div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: PUBLIC GALLERY                                         -->
+    <!-- ************************************************************* -->
+    <section id="view-gallery" class="page-view">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Explore Collection</span>
+            <h2 class="section-title">The Art Gallery</h2>
+            <p class="section-subtitle">
+              Browse the complete body of artwork. Filter by medium, search by title or artist, and click any painting to open in high-definition full view.
+            </p>
+          </div>
+
+          <!-- Gallery Filter Controls -->
+          <div class="gallery-controls">
+            <!-- Category Pills -->
+            <div id="gallery-category-filters" class="filter-pills-row">
+              <button class="filter-pill active" data-category="All">All Paintings</button>
+              <button class="filter-pill" data-category="Oil">Oil</button>
+              <button class="filter-pill" data-category="Acrylic">Acrylic</button>
+              <button class="filter-pill" data-category="Watercolor">Watercolor</button>
+              <button class="filter-pill" data-category="Abstract">Abstract</button>
+              <button class="filter-pill" data-category="Landscape">Landscape</button>
+              <button class="filter-pill" data-category="Portrait">Portrait</button>
+              <button class="filter-pill" data-category="Digital">Digital</button>
+              <button class="filter-pill" data-category="Sketch">Sketches</button>
+            </div>
+
+            <!-- Search Bar & Sorting -->
+            <div class="gallery-search-bar">
+              <div class="search-box-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="gallery-search-input" placeholder="Search paintings by title, artist, or tags..." />
+              </div>
+
+              <div class="gallery-sort-wrapper">
+                <span id="gallery-results-count">Loading artworks...</span>
+                <label for="gallery-sort-select"><i class="fa-solid fa-arrow-down-short-wide"></i> Sort:</label>
+                <select id="gallery-sort-select">
+                  <option value="newest">Newest First</option>
+                  <option value="likes">Most Appreciated</option>
+                  <option value="title">Title (A - Z)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gallery Artwork Cards Grid -->
+          <div id="gallery-grid" class="gallery-grid">
+            <!-- Cards rendered dynamically via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: UPLOAD PAINTING                                        -->
+    <!-- ************************************************************* -->
+    <section id="view-upload" class="page-view">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Artwork Submission</span>
+            <h2 class="section-title">Upload Painting</h2>
+            <p class="section-subtitle">
+              Add a new artwork to the permanent online gallery. Upload directly from your computer or mobile device.
+            </p>
+          </div>
+
+          <div class="upload-layout">
+            <form id="painting-upload-form">
+              <!-- Drag and Drop Upload Area -->
+              <div id="upload-dropzone" class="dropzone-container">
+                <input type="file" id="upload-file-input" class="hidden" accept="image/jpeg,image/jpg,image/png,image/webp" />
+
+                <!-- Initial Drop Content -->
+                <div id="upload-drop-content">
+                  <i class="fa-solid fa-cloud-arrow-up dropzone-icon"></i>
+                  <h3 class="dropzone-title">Click to browse or drag & drop painting</h3>
+                  <p class="dropzone-subtitle">Supported formats: JPG, JPEG, PNG, WEBP (Max: 15MB)</p>
+                </div>
+
+                <!-- Preview State (Hidden by default) -->
+                <div id="upload-preview-wrapper" class="hidden">
+                  <div class="upload-preview-box">
+                    <img id="upload-preview-img" src="" alt="Painting Preview" />
+                    <div class="preview-overlay">
+                      <button type="button" id="btn-clear-preview" class="btn btn-danger btn-sm" title="Remove image">
+                        <i class="fa-solid fa-trash-can"></i> Change
+                      </button>
+                    </div>
+                  </div>
+                  <div id="upload-file-info" class="file-info-badge"></div>
+                </div>
+              </div>
+
+              <!-- Upload Progress Indicator -->
+              <div id="upload-progress-container" class="progress-container hidden">
+                <div class="progress-header">
+                  <span><i class="fa-solid fa-cloud-arrow-up"></i> Uploading to Cloud Storage...</span>
+                  <span id="upload-progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div id="upload-progress-bar" class="progress-bar-fill"></div>
+                </div>
+              </div>
+
+              <!-- Painting Details Fields -->
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="upload-title">
+                    <i class="fa-solid fa-heading"></i> Painting Title *
+                  </label>
+                  <input type="text" id="upload-title" class="form-input" placeholder="e.g. Sunset Over Provence" required />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="upload-artist">
+                    <i class="fa-solid fa-user-pen"></i> Artist Name *
+                  </label>
+                  <input type="text" id="upload-artist" class="form-input" placeholder="e.g. Elena Rostova" required />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="upload-category">
+                    <i class="fa-solid fa-layer-group"></i> Category / Style
+                  </label>
+                  <select id="upload-category" class="form-select">
+                    <option value="Oil">Oil Painting</option>
+                    <option value="Acrylic">Acrylic Painting</option>
+                    <option value="Watercolor">Watercolor</option>
+                    <option value="Abstract">Abstract Art</option>
+                    <option value="Landscape">Landscape</option>
+                    <option value="Portrait">Portrait</option>
+                    <option value="Digital">Digital Painting</option>
+                    <option value="Sketch">Sketch & Drawing</option>
+                    <option value="Mixed Media">Mixed Media</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="upload-medium">
+                    <i class="fa-solid fa-palette"></i> Medium / Materials
+                  </label>
+                  <input type="text" id="upload-medium" class="form-input" placeholder="e.g. Oil on Belgian Linen Canvas" />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="upload-dimensions">
+                    <i class="fa-solid fa-ruler-combined"></i> Dimensions
+                  </label>
+                  <input type="text" id="upload-dimensions" class="form-input" placeholder="e.g. 36 x 48 inches (91 x 122 cm)" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="upload-year">
+                    <i class="fa-solid fa-calendar-days"></i> Year of Creation
+                  </label>
+                  <input type="text" id="upload-year" class="form-input" placeholder="2024" value="2024" />
+                </div>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="upload-price">
+                    <i class="fa-solid fa-tag"></i> Price / Availability
+                  </label>
+                  <input type="text" id="upload-price" class="form-input" placeholder="e.g. $2,400 or Available" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="upload-status">
+                    <i class="fa-solid fa-circle-check"></i> Status
+                  </label>
+                  <select id="upload-status" class="form-select">
+                    <option value="Available">Available for Purchase</option>
+                    <option value="Exhibition Only">Exhibition Only</option>
+                    <option value="Private Collection">Private Collection</option>
+                    <option value="NFS">Not for Sale (NFS)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="upload-description">
+                  <i class="fa-solid fa-align-left"></i> Painting Story & Description
+                </label>
+                <textarea id="upload-description" class="form-textarea" placeholder="Describe the inspiration, color palette, lighting technique, or emotional narrative behind this painting..."></textarea>
+              </div>
+
+              <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                <button type="reset" class="btn btn-outline" onclick="window.app.clearUploadFile()">
+                  <i class="fa-solid fa-arrow-rotate-left"></i> Reset Form
+                </button>
+                <button type="submit" id="btn-submit-upload" class="btn btn-primary">
+                  <i class="fa-solid fa-cloud-arrow-up"></i> Upload Painting to Gallery
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: ABOUT PAGE                                             -->
+    <!-- ************************************************************* -->
+    <section id="view-about" class="page-view">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Creative Journey</span>
+            <h2 class="section-title">About the Artist</h2>
+            <p class="section-subtitle">
+              The story, philosophy, and artistic exploration behind My Art Gallery.
+            </p>
+          </div>
+
+          <div class="about-grid">
+            <div class="about-artist-img-wrapper">
+              <div class="artist-portrait-frame">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" alt="Artist Portrait" class="artist-portrait-img" />
+              </div>
+            </div>
+
+            <div class="about-bio-text">
+              <h3 style="font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 0.5rem;">Elena Rostova</h3>
+              <p class="text-muted" style="font-size: 1.05rem; margin-bottom: 1.5rem;">Principal Artist & Studio Founder</p>
+
+              <p style="margin-bottom: 1.2rem; line-height: 1.8;">
+                Born with an innate passion for texture, color harmony, and natural light, Elena has spent over 15 years developing a distinctive style that bridges classical European impressionism with dynamic contemporary abstraction.
+              </p>
+              <p style="margin-bottom: 1.2rem; line-height: 1.8;">
+                Working predominantly in high-grade oils and cold-pressed watercolor pigments, each artwork is created through intentional layers—sometimes requiring months of slow glazes and contemplative palette-knife sculpting.
+              </p>
+
+              <div class="about-quote-box">
+                "My mission is to create art that transforms living spaces into spaces of contemplation, beauty, and emotional peace."
+              </div>
+
+              <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-primary" data-nav-target="gallery">
+                  <i class="fa-solid fa-images"></i> View Collection
+                </button>
+                <button class="btn btn-outline" data-nav-target="contact">
+                  <i class="fa-solid fa-paper-plane"></i> Commission a Piece
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Studio Purpose Section -->
+          <div class="section-header" style="margin-top: 5rem;">
+            <span class="section-eyebrow">Our Vision</span>
+            <h2 class="section-title">The Purpose of This Gallery</h2>
+            <p class="section-subtitle">
+              Democratizing the fine art experience and creating an open digital home for collectors and art enthusiasts worldwide.
+            </p>
+          </div>
+
+          <div class="philosophy-grid">
+            <div class="philosophy-card">
+              <i class="fa-solid fa-earth-americas"></i>
+              <h3>Global Public Access</h3>
+              <p class="text-muted">Artwork should not be confined behind closed museum vaults. Anyone in the world can experience and appreciate these pieces online freely.</p>
+            </div>
+            <div class="philosophy-card">
+              <i class="fa-solid fa-certificate"></i>
+              <h3>Authenticity & Story</h3>
+              <p class="text-muted">Every painting includes the story behind its inception, the exact dimensions, mediums used, and historical context.</p>
+            </div>
+            <div class="philosophy-card">
+              <i class="fa-solid fa-hand-holding-heart"></i>
+              <h3>Direct Artist Connection</h3>
+              <p class="text-muted">Engage with the artist directly for custom private commissions, exhibitions, gallery loans, or acquisition inquiries.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: CONTACT PAGE                                           -->
+    <!-- ************************************************************* -->
+    <section id="view-contact" class="page-view">
+      <div class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-eyebrow">Get In Touch</span>
+            <h2 class="section-title">Contact & Studio Inquiries</h2>
+            <p class="section-subtitle">
+              Inquire about purchasing an available painting, commission custom artwork, or propose an exhibition.
+            </p>
+          </div>
+
+          <div class="contact-grid">
+            <!-- Studio Information Card -->
+            <div class="contact-info-card">
+              <div>
+                <h3 style="font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 1.5rem;">Studio Information</h3>
+
+                <div class="contact-detail-item">
+                  <div class="contact-icon-box"><i class="fa-solid fa-location-dot"></i></div>
+                  <div>
+                    <strong style="display: block; margin-bottom: 0.2rem;">Fine Arts Studio</strong>
+                    <span class="text-muted">450 Arts District Boulevard, Atelier 8<br />San Francisco, CA 94107</span>
+                  </div>
+                </div>
+
+                <div class="contact-detail-item">
+                  <div class="contact-icon-box"><i class="fa-solid fa-envelope"></i></div>
+                  <div>
+                    <strong style="display: block; margin-bottom: 0.2rem;">Direct Inquiries</strong>
+                    <span class="text-muted">contact@myartgallery.com</span>
+                  </div>
+                </div>
+
+                <div class="contact-detail-item">
+                  <div class="contact-icon-box"><i class="fa-solid fa-clock"></i></div>
+                  <div>
+                    <strong style="display: block; margin-bottom: 0.2rem;">Studio Hours</strong>
+                    <span class="text-muted">Monday – Friday: 10:00 AM – 6:00 PM PST<br />Private viewings by appointment</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Social Media Connections -->
+              <div>
+                <h4 style="font-family: var(--font-serif); font-size: 1.15rem; margin-bottom: 0.8rem;">Follow on Social Media</h4>
+                <div class="social-links-row">
+                  <a href="https://instagram.com" target="_blank" rel="noopener" class="social-circle-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                  <a href="https://pinterest.com" target="_blank" rel="noopener" class="social-circle-btn" title="Pinterest"><i class="fa-brands fa-pinterest"></i></a>
+                  <a href="https://behance.net" target="_blank" rel="noopener" class="social-circle-btn" title="Behance"><i class="fa-brands fa-behance"></i></a>
+                  <a href="https://artstation.com" target="_blank" rel="noopener" class="social-circle-btn" title="ArtStation"><i class="fa-brands fa-artstation"></i></a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener" class="social-circle-btn" title="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Inquiry Form -->
+            <div class="upload-layout" style="margin: 0; padding: 2.5rem;">
+              <h3 style="font-family: var(--font-serif); font-size: 1.6rem; margin-bottom: 1.5rem;">Send a Message</h3>
+              <form id="contact-inquiry-form">
+                <div class="form-grid-2">
+                  <div class="form-group">
+                    <label class="form-label" for="contact-name"><i class="fa-solid fa-user"></i> Your Name *</label>
+                    <input type="text" id="contact-name" class="form-input" placeholder="e.g. Julian Hayes" required />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="contact-email"><i class="fa-solid fa-at"></i> Email Address *</label>
+                    <input type="email" id="contact-email" class="form-input" placeholder="julian@example.com" required />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="contact-subject"><i class="fa-solid fa-tag"></i> Subject *</label>
+                  <input type="text" id="contact-subject" class="form-input" placeholder="e.g. Acquisition inquiry for 'Celestial Symphony'" required />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="contact-message"><i class="fa-solid fa-message"></i> Message *</label>
+                  <textarea id="contact-message" class="form-textarea" placeholder="Please describe your question, shipping location, or commission preferences in detail..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  <i class="fa-solid fa-paper-plane"></i> Send Inquiry to Gallery
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ************************************************************* -->
+    <!-- VIEW: ADMIN DASHBOARD                                        -->
+    <!-- ************************************************************* -->
+    <section id="view-admin" class="page-view">
+      <div class="section">
+        <div class="container">
+
+          <!-- State: Login Prompt if not authenticated -->
+          <div id="admin-login-required" class="upload-layout text-center" style="max-width: 600px; padding: 3.5rem 2rem;">
+            <i class="fa-solid fa-shield-halved" style="font-size: 3.5rem; color: var(--gold-primary); margin-bottom: 1.5rem;"></i>
+            <h2 style="font-family: var(--font-serif); margin-bottom: 0.8rem;">Administrator Portal</h2>
+            <p class="text-muted" style="margin-bottom: 2rem;">
+              This dashboard is restricted to the gallery curator. Please sign in to manage, edit, upload, or delete paintings.
+            </p>
+            <button class="btn btn-primary" onclick="document.getElementById('login-modal').classList.add('active')">
+              <i class="fa-solid fa-lock-open"></i> Sign In to Dashboard
+            </button>
+            <p class="text-dim" style="font-size: 0.85rem; margin-top: 1.5rem;">
+              Connect Firebase in settings to enable administrator sign-in.
+            </p>
+          </div>
+
+          <!-- State: Authenticated Admin Dashboard -->
+          <div id="admin-dashboard-content" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <span class="section-eyebrow">Control Center</span>
+                <h2 class="section-title" style="margin-bottom: 0;">Gallery Admin Dashboard</h2>
+              </div>
+              <div style="display: flex; gap: 0.75rem;">
+                <button class="btn btn-primary btn-sm" data-nav-target="upload">
+                  <i class="fa-solid fa-plus"></i> Upload New Artwork
+                </button>
+                <button class="btn btn-outline btn-sm" id="btn-admin-config" onclick="document.getElementById('config-wizard-modal').classList.add('active')">
+                  <i class="fa-solid fa-gear"></i> Backend Config
+                </button>
+              </div>
+            </div>
+
+            <!-- Metrics Statistics Cards -->
+            <div class="admin-metrics-grid">
+              <div class="metric-card">
+                <div class="metric-icon-box"><i class="fa-solid fa-images"></i></div>
+                <div class="metric-data">
+                  <h3 id="stat-total-paintings">0</h3>
+                  <p>Total Paintings</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon-box"><i class="fa-solid fa-heart text-danger"></i></div>
+                <div class="metric-data">
+                  <h3 id="stat-total-likes">0</h3>
+                  <p>Total Likes</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon-box"><i class="fa-solid fa-eye text-info"></i></div>
+                <div class="metric-data">
+                  <h3 id="stat-total-views">0</h3>
+                  <p>Gallery Impressions</p>
+                </div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-icon-box"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="metric-data">
+                  <h3 id="stat-total-categories">0</h3>
+                  <p>Categories</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paintings Management Table Card -->
+            <div class="admin-table-card">
+              <div class="table-header-bar">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <h3 style="font-family: var(--font-serif); font-size: 1.35rem;">Manage Gallery Artworks</h3>
+                  <span id="admin-table-count" class="category-pill">0 Artworks</span>
+                </div>
+                <div class="search-box-wrapper" style="min-width: 240px; max-width: 360px;">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" placeholder="Search paintings..." oninput="window.adminCtrl.filterAdminTable(this.value)" />
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px;">#</th>
+                      <th>Painting & Details</th>
+                      <th>Artist</th>
+                      <th>Category</th>
+                      <th>Engagement</th>
+                      <th>Added Date</th>
+                      <th style="text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-paintings-tbody">
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Category Breakdown Card -->
+            <div class="upload-layout" style="margin: 0; padding: 2rem;">
+              <h3 style="font-family: var(--font-serif); font-size: 1.35rem; margin-bottom: 1.5rem;">Category & Medium Distribution</h3>
+              <div id="admin-category-breakdown">
+                <!-- Category progress bars rendered here -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= LIGHTBOX FULL-SIZE ARTWORK MODAL ================= -->
+  <div id="lightbox-modal" class="modal-backdrop">
+    <div class="lightbox-modal-content">
+      <button id="lightbox-close-btn" class="modal-close-corner" title="Close"><i class="fa-solid fa-xmark"></i></button>
+
+      <!-- Left: High-Res Interactive Viewport -->
+      <div class="lightbox-viewport">
+        <img id="lightbox-img" src="" alt="Full Artwork" class="lightbox-main-img" />
+
+        <!-- Zoom Toolbar -->
+        <div class="lightbox-zoom-toolbar">
+          <button id="lightbox-zoom-out" class="zoom-tool-btn" title="Zoom Out"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+          <button id="lightbox-zoom-reset" class="zoom-tool-btn" title="Reset Zoom">100%</button>
+          <button id="lightbox-zoom-in" class="zoom-tool-btn" title="Zoom In"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+        </div>
+      </div>
+
+      <!-- Right: Detailed Artwork Metadata Panel -->
+      <div class="lightbox-details-panel">
+        <div>
+          <span id="lightbox-category" class="category-pill" style="margin-bottom: 0.8rem;">Oil</span>
+          <h2 id="lightbox-title" class="lightbox-title">Artwork Title</h2>
+          <p id="lightbox-artist" class="lightbox-artist">by Artist Name</p>
+
+          <table class="meta-spec-table">
+            <tbody>
+              <tr>
+                <td>Medium</td>
+                <td id="lightbox-medium">Oil on Canvas</td>
+              </tr>
+              <tr>
+                <td>Dimensions</td>
+                <td id="lightbox-dimensions">36 x 48 inches</td>
+              </tr>
+              <tr>
+                <td>Year</td>
+                <td id="lightbox-year">2024</td>
+              </tr>
+              <tr>
+                <td>Status</td>
+                <td id="lightbox-status">Available</td>
+              </tr>
+              <tr>
+                <td>Valuation</td>
+                <td id="lightbox-price" style="color: var(--gold-primary); font-weight: 700;">$2,400</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="margin-top: 1.25rem;">
+            <strong style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); display: block; margin-bottom: 0.4rem;">Artist's Narrative:</strong>
+            <p id="lightbox-description" class="lightbox-description">Detailed description of the painting.</p>
+          </div>
+        </div>
+
+        <div class="lightbox-actions-row">
+          <button id="lightbox-like-btn" class="btn btn-outline">
+            <i class="fa-regular fa-heart"></i> Like (<span class="like-count">0</span>)
+          </button>
+          <button id="lightbox-share-btn" class="btn btn-outline" title="Share artwork">
+            <i class="fa-solid fa-share-nodes"></i> Share
+          </button>
+          <button id="lightbox-inquire-btn" class="btn btn-primary" style="flex: 1;">
+            <i class="fa-solid fa-paper-plane"></i> Inquire to Acquire
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ADMIN LOGIN MODAL ================= -->
+  <div id="login-modal" class="modal-backdrop">
+    <div class="modal-dialog-box">
+      <button id="login-modal-close" class="modal-close-corner" title="Close"><i class="fa-solid fa-xmark"></i></button>
+
+      <div class="text-center" style="margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-shield-halved" style="font-size: 2.8rem; color: var(--gold-primary); margin-bottom: 0.8rem;"></i>
+        <h3 class="modal-title">Admin Sign In</h3>
+        <p class="modal-subtitle">Access management tools and artwork database controls</p>
+      </div>
+
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input type="email" id="login-email" class="form-input" placeholder="Admin email address" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password"><i class="fa-solid fa-key"></i> Password</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Password" required />
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%;">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In as Admin
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= EDIT PAINTING MODAL ================= -->
+  <div id="edit-painting-modal" class="modal-backdrop">
+    <div class="modal-dialog-box modal-lg">
+      <button id="edit-modal-close" class="modal-close-corner" title="Close"><i class="fa-solid fa-xmark"></i></button>
+
+      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="width: 60px; height: 60px; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border-gold);">
+          <img id="edit-preview-img" src="" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;" />
+        </div>
+        <div>
+          <h3 class="modal-title" style="font-size: 1.4rem; margin-bottom: 0.2rem;">Edit Artwork Details</h3>
+          <p class="text-muted" style="font-size: 0.85rem;">Update the painting information in the gallery database.</p>
+        </div>
+      </div>
+
+      <form id="edit-painting-form">
+        <input type="hidden" id="edit-painting-id" />
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="edit-title">Title *</label>
+            <input type="text" id="edit-title" class="form-input" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-artist">Artist *</label>
+            <input type="text" id="edit-artist" class="form-input" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="edit-category">Category</label>
+            <select id="edit-category" class="form-select">
+              <option value="Oil">Oil</option>
+              <option value="Acrylic">Acrylic</option>
+              <option value="Watercolor">Watercolor</option>
+              <option value="Abstract">Abstract</option>
+              <option value="Landscape">Landscape</option>
+              <option value="Portrait">Portrait</option>
+              <option value="Digital">Digital</option>
+              <option value="Sketch">Sketch</option>
+              <option value="Mixed Media">Mixed Media</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-medium">Medium</label>
+            <input type="text" id="edit-medium" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="edit-dimensions">Dimensions</label>
+            <input type="text" id="edit-dimensions" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-year">Year</label>
+            <input type="text" id="edit-year" class="form-input" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="edit-price">Price</label>
+            <input type="text" id="edit-price" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="edit-status">Status</label>
+            <select id="edit-status" class="form-select">
+              <option value="Available">Available</option>
+              <option value="Exhibition Only">Exhibition Only</option>
+              <option value="Private Collection">Private Collection</option>
+              <option value="NFS">Not for Sale</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="edit-description">Description</label>
+          <textarea id="edit-description" class="form-textarea" style="min-height: 80px;"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem;">
+          <button type="button" id="btn-cancel-edit" class="btn btn-outline">Cancel</button>
+          <button type="submit" id="btn-save-edit" class="btn btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= CONFIRM DELETE MODAL ================= -->
+  <div id="confirm-delete-modal" class="modal-backdrop">
+    <div class="modal-dialog-box" style="max-width: 480px; text-align: center;">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size: 3rem; color: var(--accent-red); margin-bottom: 1rem;"></i>
+      <h3 class="modal-title">Delete Artwork</h3>
+      <p class="modal-subtitle">
+        Are you sure you want to permanently delete <strong id="delete-painting-title">this painting</strong>?
+      </p>
+      <p class="text-dim" style="font-size: 0.85rem; margin-bottom: 1.5rem;">
+        This will permanently remove the painting file from Firebase Cloud Storage and delete its record from Cloud Firestore.
+      </p>
+      <div style="display: flex; gap: 0.75rem; justify-content: center;">
+        <button id="btn-cancel-delete" class="btn btn-outline">Cancel</button>
+        <button id="btn-confirm-delete-action" class="btn btn-danger">
+          <i class="fa-solid fa-trash-can"></i> Delete Permanently
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FIREBASE CONFIG WIZARD MODAL ================= -->
+  <div id="config-wizard-modal" class="modal-backdrop">
+    <div class="modal-dialog-box modal-lg">
+      <button id="config-modal-close" class="modal-close-corner" title="Close"><i class="fa-solid fa-xmark"></i></button>
+
+      <div style="margin-bottom: 1.5rem;">
+        <span class="category-pill" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-plug"></i> Backend Integration</span>
+        <h3 class="modal-title">Connect Firebase Backend</h3>
+        <p class="modal-subtitle">
+          Paste your project credentials below or configure them in <code>js/firebase-config.js</code> to connect Firestore Database, Storage, and Authentication.
+        </p>
+      </div>
+
+      <form id="firebase-config-form">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="cfg-api-key">API Key *</label>
+            <input type="text" id="cfg-api-key" class="form-input" placeholder="AIzaSy..." required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cfg-project-id">Project ID *</label>
+            <input type="text" id="cfg-project-id" class="form-input" placeholder="my-art-gallery-xxx" required />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="cfg-auth-domain">Auth Domain</label>
+            <input type="text" id="cfg-auth-domain" class="form-input" placeholder="my-art-gallery-xxx.firebaseapp.com" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cfg-storage-bucket">Storage Bucket</label>
+            <input type="text" id="cfg-storage-bucket" class="form-input" placeholder="my-art-gallery-xxx.appspot.com" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="cfg-sender-id">Messaging Sender ID</label>
+            <input type="text" id="cfg-sender-id" class="form-input" placeholder="123456789012" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="cfg-app-id">App ID</label>
+            <input type="text" id="cfg-app-id" class="form-input" placeholder="1:123456789012:web:abcdef" />
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+          <button type="button" id="btn-reset-config" class="btn btn-outline btn-sm">
+            <i class="fa-solid fa-arrow-rotate-left"></i> Reset to Default
+          </button>
+
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-check"></i> Save & Connect Firebase
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="gallery-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="brand-logo" style="margin-bottom: 1rem;">
+            <div class="brand-icon"><i class="fa-solid fa-palette"></i></div>
+            <div class="brand-text">
+              <span class="brand-title">My Art Gallery</span>
+              <span class="brand-subtitle">Fine Art Studio</span>
+            </div>
+          </div>
+          <p class="text-muted" style="font-size: 0.9rem; line-height: 1.7; max-width: 320px;">
+            A premier online sanctuary displaying original paintings and fine art to visitors across the globe.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#home" data-nav-target="home">Home</a></li>
+            <li><a href="#gallery" data-nav-target="gallery">Art Gallery</a></li>
+            <li><a href="#upload" data-nav-target="upload">Upload Artwork</a></li>
+            <li><a href="#about" data-nav-target="about">About the Artist</a></li>
+            <li><a href="#contact" data-nav-target="contact">Contact Studio</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Disciplines</h4>
+          <ul class="footer-links">
+            <li><a href="#gallery" data-nav-target="gallery">Oil Paintings</a></li>
+            <li><a href="#gallery" data-nav-target="gallery">Acrylic Works</a></li>
+            <li><a href="#gallery" data-nav-target="gallery">Watercolors</a></li>
+            <li><a href="#gallery" data-nav-target="gallery">Abstract Studies</a></li>
+            <li><a href="#gallery" data-nav-target="gallery">Portraits & Figures</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Studio & Inquiries</h4>
+          <p class="text-muted" style="font-size: 0.88rem; margin-bottom: 1rem;">
+            Interested in an original piece or custom commission?
+          </p>
+          <button class="btn btn-outline btn-sm" data-nav-target="contact" style="width: 100%;">
+            <i class="fa-solid fa-paper-plane"></i> Send Direct Inquiry
+          </button>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2024 My Art Gallery. All Rights Reserved. Original fine artwork protected by copyright.</span>
+        <span>Crafted for Fine Art Collectors & Artists Worldwide</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Scripts -->
+  <script src="js/sample-data.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/db.js"></script>
+  <script src="js/admin.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

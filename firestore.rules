@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Paintings Collection Rules
+    // - Anyone in the world can view paintings without logging in.
+    // - Anyone can appreciate/like an artwork (updating only likes).
+    // - Only authenticated administrators can create, edit or delete artworks.
+    // ===============================================================
+    match /paintings/{paintingId} {
+      // Public read access for all visitors
+      allow read: if true;
+
+      // Public like action (allows incrementing likes without full edit rights)
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+
+      // Full management (create, update metadata, delete) restricted to authenticated users
+      allow create, delete: if request.auth != null;
+      allow update: if request.auth != null;
+    }
+
+    // ===============================================================
+    // Contact Form Inquiries Collection Rules
+    // - Public visitors can submit inquiries.
+    // - Only authenticated admin can read and manage customer inquiries.
+    // ===============================================================
+    match /inquiries/{inquiryId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+  }
+}
